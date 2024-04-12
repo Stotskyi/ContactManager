@@ -1,0 +1,15 @@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@using (Html.BeginForm("Upload", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label for="file">Upload CSV File:</label>
+        <input type="file" name="file" id="file" class="form-control-file">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+}

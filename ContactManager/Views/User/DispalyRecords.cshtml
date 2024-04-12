@@ -1,0 +1,73 @@
+@model IEnumerable<ContactManager.DAL.Models.User>
+
+<h1>Records</h1>
+<input type="text" id="searchInput" placeholder="Search...">
+ <link rel="stylesheet" href="../../Content/Table.css">
+<table class="table">
+    <tr>
+        <th class="table__heading">Name</th>
+        <th class="table__heading">Date of birth</th>
+        <th class="table__heading">Married</th>
+        <th class="table__heading">Phone</th>
+        <th class="table__heading">Salary</th>
+    </tr>
+     @foreach (var user in Model)
+    {
+        <tr class="table__row">
+            <td class="table__content" data-heading="Name">@user.Name</td>
+            <td class="table__content" data-heading="Date of birth">@user.DateOfBirth.ToString("yyyy-MM-dd")</td>
+            <td class="table__content" data-heading="Married">@(user.Married ? "Yes" : "No")</td>
+            <td class="table__content" data-heading="Phone">@user.Phone</td>
+            <td class="table__content" data-heading="Salary">@user.Salary.ToString("0.00")</td>
+            <td><button class="deleteBtn">Delete</button></td>
+        </tr>
+    }
+</table>
+
+@section scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', function () {
+            const searchText = this.value.trim().toLowerCase();
+
+            document.querySelectorAll('.table__row').forEach(function (row) {
+        
+                const rowText = row.textContent.trim().toLowerCase();
+
+                if (rowText.includes(searchText)) {
+                    row.style.display = '';
+                } 
+                else 
+                {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.querySelectorAll('.table__heading').forEach(function (heading) {
+            heading.addEventListener('click', function () {
+                const field = this.dataset.field;
+                const isNumeric = !isNaN(parseFloat(document.querySelector(`[data-heading="${field}"]`).textContent));
+
+                const sortedRows = Array.from(document.querySelectorAll('.table__row'))
+                    .sort((a, b) => {
+                        const aValue = a.querySelector(`[data-heading="${field}"]`).textContent;
+                        const bValue = b.querySelector(`[data-heading="${field}"]`).textContent;
+
+                        if (isNumeric) {
+                            return parseFloat(aValue) - parseFloat(bValue);
+                        } 
+                        else 
+                        {
+                            return aValue.localeCompare(bValue);
+                        }
+                    });
+
+                document.querySelector('tbody').innerHTML = '';
+                sortedRows.forEach(row => document.querySelector('tbody').appendChild(row));
+            });
+        });
+   
+    </script>
+}
